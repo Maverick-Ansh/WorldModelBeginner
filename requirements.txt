@@ -1,0 +1,15 @@
+# Core runtime dependencies (CPU or CUDA both fine).
+# For CUDA builds of torch, follow https://pytorch.org/get-started/locally/
+torch>=2.2
+numpy>=1.24
+gymnasium>=0.29
+pyyaml>=6.0
+tensorboard>=2.14
+tqdm>=4.65
+
+# --- Optional extras (not required for the toy env / unit tests) ---
+# Dexterous-hand simulation via MuJoCo:
+#   pip install "gymnasium[mujoco]" gymnasium-robotics
+#
+# NVIDIA Isaac Lab (GPU sim, sim-to-real). Installed separately, see docs/sim2real.md:
+#   https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/index.html

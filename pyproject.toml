@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "worldmodel"
+version = "0.1.0"
+description = "Modular world-model RL (DreamerV3 + TD-MPC2) for dexterous robotic-hand control, targeting NVIDIA Isaac Lab."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "WorldModelBeginner contributors" }]
+keywords = ["reinforcement-learning", "world-models", "dreamerv3", "tdmpc2", "robotics", "isaac-lab"]
+
+dependencies = [
+    "torch>=2.2",
+    "numpy>=1.24",
+    "gymnasium>=0.29",
+    "pyyaml>=6.0",
+    "tensorboard>=2.14",
+    "tqdm>=4.65",
+]
+
+[project.optional-dependencies]
+mujoco = ["gymnasium[mujoco]>=0.29", "gymnasium-robotics>=1.2"]
+dev = ["pytest>=7.4", "ruff>=0.4"]
+
+[project.scripts]
+wm-train = "worldmodel.train:main"
+wm-eval = "worldmodel.eval:main"
+
+[tool.setuptools.packages.find]
+include = ["worldmodel*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

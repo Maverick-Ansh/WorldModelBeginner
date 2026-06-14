@@ -1,0 +1,13 @@
+# Base configuration shared by every run. Algo/env files and CLI overrides layer on top.
+seed: 0
+device: auto              # auto | cpu | cuda
+
+logdir: logs
+total_steps: 1000000     # total ENV steps (summed across parallel envs)
+prefill_steps: 1000      # random-action steps before learning starts
+train_every: 1           # run updates every N collection iterations
+updates_per_train: 1     # gradient updates per training trigger
+replay_capacity: 1000000 # total transitions stored (split across envs internally)
+
+log_every: 200           # collection iterations between console/TensorBoard flushes
+checkpoint_every: 5000   # collection iterations between checkpoint saves

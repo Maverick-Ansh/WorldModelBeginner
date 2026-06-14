@@ -1,0 +1,33 @@
+# DreamerV3 (Hafner et al., 2023). Defaults follow the paper's robust "size S" recipe.
+algo:
+  name: dreamerv3
+
+  # --- world model (RSSM) ---
+  hidden: 512            # MLP width for all heads
+  embed_dim: 512         # observation embedding size
+  mlp_layers: 2
+  deter: 512             # GRU (deterministic) state size
+  groups: 32             # categorical latent groups ...
+  classes: 32            # ... each with this many classes (stoch = groups*classes)
+  unimix: 0.01           # uniform mixing for categorical latents
+  num_bins: 255          # two-hot bins for reward/value heads
+  kl_free: 1.0           # free bits (nats)
+  kl_dyn: 0.5            # dynamics KL scale
+  kl_rep: 0.1            # representation KL scale
+
+  # --- behavior (actor-critic in imagination) ---
+  gamma: 0.997
+  lam: 0.95              # lambda-return mixing
+  horizon: 15            # imagination rollout length
+  ent_coef: 0.0003       # actor entropy bonus
+  actor_min_std: 0.1
+  actor_max_std: 1.0
+  critic_slow_tau: 0.02  # EMA rate for the slow target critic
+
+  # --- optimization ---
+  wm_lr: 0.0001
+  actor_lr: 0.00003
+  critic_lr: 0.00003
+  grad_clip: 100.0
+  batch_size: 16         # sequences per update
+  seq_len: 64            # timesteps per sequence

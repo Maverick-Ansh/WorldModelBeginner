@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+.installed.cfg
+*.egg
+
+# Virtual envs
+.venv/
+venv/
+env/
+ENV/
+
+# Tooling
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.ipynb_checkpoints/
+
+# Experiment outputs
+logs/
+runs/
+outputs/
+checkpoints/
+wandb/
+*.ckpt
+*.pt
+*.pth
+videos/
+*.mp4
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp

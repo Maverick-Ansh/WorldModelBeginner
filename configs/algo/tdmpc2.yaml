@@ -1,0 +1,38 @@
+# TD-MPC2 (Hansen et al., 2024). Latent decoder-free world model + MPPI planning.
+algo:
+  name: tdmpc2
+
+  # --- latent world model ---
+  latent_dim: 512        # must be divisible by simnorm_group
+  hidden: 512
+  mlp_layers: 2
+  simnorm_group: 8       # SimNorm simplex size
+  num_q: 5               # Q-ensemble size (clipped double-Q over 2 random members)
+  num_bins: 101          # two-hot bins for reward/value
+
+  # --- objective ---
+  gamma: 0.99
+  rho: 0.5               # per-step horizon discount for the multi-step loss
+  consistency_coef: 20.0
+  reward_coef: 0.1
+  value_coef: 0.1
+  entropy_coef: 0.0001
+  tau: 0.01              # target-network EMA rate
+  horizon: 3             # model/TD rollout length
+
+  # --- optimization ---
+  lr: 0.0003
+  grad_clip: 20.0
+  batch_size: 256
+
+  # --- MPPI planner ---
+  plan_horizon: 3
+  plan_iterations: 6
+  plan_samples: 512
+  plan_elites: 64
+  plan_pi_samples: 24    # candidates drawn from the policy prior
+  plan_temperature: 0.5
+  min_plan_std: 0.05
+  max_plan_std: 2.0
+  actor_min_std: 0.05
+  actor_max_std: 1.0
