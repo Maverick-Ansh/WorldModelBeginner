@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>arXiv Research Feed — CV · AI · ML · NLP · NE</title>
+<meta name="description" content="A free, auto-updating feed of recent arXiv papers in computer vision, AI, machine learning, NLP and neural/evolutionary computing." />
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg-soft: #161b22;
+    --bg-card: #161b22;
+    --border: #2a313c;
+    --text: #e6edf3;
+    --muted: #9aa7b4;
+    --accent: #6ea8fe;
+    --accent-2: #b692f6;
+    --chip: #21262d;
+    --chip-active: #1f6feb;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: radial-gradient(1200px 600px at 80% -10%, #15233b 0%, var(--bg) 55%);
+    color: var(--text);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  header {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 48px 20px 8px;
+  }
+  .title {
+    font-size: clamp(28px, 5vw, 44px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .subtitle { color: var(--muted); margin: 10px 0 0; font-size: 16px; max-width: 70ch; }
+  .meta { color: var(--muted); font-size: 13px; margin-top: 14px; display: flex; gap: 16px; flex-wrap: wrap; }
+  .meta b { color: var(--text); font-weight: 600; }
+
+  .controls {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    backdrop-filter: blur(10px);
+    background: rgba(13, 17, 23, 0.82);
+    border-bottom: 1px solid var(--border);
+    margin-top: 22px;
+  }
+  .controls-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 14px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  #search {
+    flex: 1 1 260px;
+    min-width: 0;
+    padding: 11px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg-soft);
+    color: var(--text);
+    font-size: 15px;
+    outline: none;
+  }
+  #search:focus { border-color: var(--accent); }
+  #sort {
+    padding: 11px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg-soft);
+    color: var(--text);
+    font-size: 14px;
+  }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip {
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid var(--border);
+    background: var(--chip);
+    color: var(--text);
+    padding: 7px 13px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background .15s, border-color .15s, transform .05s;
+  }
+  .chip:hover { border-color: var(--accent); }
+  .chip:active { transform: scale(0.97); }
+  .chip.active { background: var(--chip-active); border-color: var(--chip-active); color: #fff; }
+  .chip .n { opacity: 0.7; font-weight: 500; margin-left: 5px; }
+
+  main { max-width: 1000px; margin: 0 auto; padding: 22px 20px 80px; }
+  .status { color: var(--muted); padding: 40px 4px; text-align: center; }
+  .count-line { color: var(--muted); font-size: 13px; margin: 6px 2px 18px; }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+    margin-bottom: 16px;
+    transition: border-color .15s, transform .08s;
+  }
+  .card:hover { border-color: #3b4654; }
+  .card h2 { font-size: 18px; line-height: 1.35; margin: 0 0 8px; font-weight: 700; }
+  .card h2 a { color: var(--text); }
+  .card h2 a:hover { color: var(--accent); }
+  .authors { color: var(--muted); font-size: 13.5px; margin: 0 0 10px; }
+  .badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge {
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: #1b2330;
+    border: 1px solid var(--border);
+    color: var(--accent);
+  }
+  .badge.primary { background: #18233a; color: var(--accent-2); border-color: #34304f; }
+  .abstract {
+    color: #c7d1db;
+    font-size: 14.5px;
+    margin: 0;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+  }
+  .abstract.open { -webkit-line-clamp: unset; }
+  .card-footer { display: flex; gap: 14px; align-items: center; margin-top: 14px; flex-wrap: wrap; }
+  .toggle { background: none; border: none; color: var(--accent); cursor: pointer; font-size: 13px; padding: 0; }
+  .links { display: flex; gap: 10px; margin-left: auto; }
+  .links a {
+    font-size: 13px; font-weight: 600;
+    padding: 6px 13px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--bg-soft);
+  }
+  .links a:hover { border-color: var(--accent); text-decoration: none; }
+  .date { color: var(--muted); font-size: 12.5px; }
+
+  footer {
+    max-width: 1000px; margin: 0 auto; padding: 30px 20px 60px;
+    color: var(--muted); font-size: 13px; border-top: 1px solid var(--border);
+  }
+  footer a { color: var(--muted); text-decoration: underline; }
+  .totop {
+    position: fixed; right: 20px; bottom: 20px;
+    background: var(--chip-active); color: #fff; border: none;
+    width: 44px; height: 44px; border-radius: 50%; font-size: 20px;
+    cursor: pointer; display: none; box-shadow: 0 6px 20px rgba(0,0,0,.4);
+  }
+  .totop.show { display: block; }
+</style>
+</head>
+<body>
+  <header>
+    <h1 class="title">arXiv Research Feed</h1>
+    <p class="subtitle">
+      Auto-updating links to the latest research papers across Computer Vision,
+      Artificial Intelligence, Machine Learning, NLP, and Neural &amp; Evolutionary
+      Computing — pulled straight from arXiv. Free and open.
+    </p>
+    <div class="meta" id="meta"></div>
+  </header>
+
+  <div class="controls">
+    <div class="controls-inner">
+      <div class="row">
+        <input id="search" type="search" placeholder="Search titles, authors, abstracts…" autocomplete="off" />
+        <select id="sort" aria-label="Sort order">
+          <option value="newest">Newest first</option>
+          <option value="oldest">Oldest first</option>
+        </select>
+      </div>
+      <div class="chips" id="chips"></div>
+    </div>
+  </div>
+
+  <main>
+    <div class="count-line" id="count"></div>
+    <div id="list"><div class="status">Loading the latest papers…</div></div>
+  </main>
+
+  <footer>
+    <p>
+      Built with the open <a href="https://info.arxiv.org/help/api/index.html" target="_blank" rel="noopener">arXiv API</a>.
+      Thank you to arXiv for use of its open access interoperability. This site links to papers
+      hosted on arXiv.org and is not affiliated with or endorsed by arXiv.
+    </p>
+    <p>Updated daily &middot; <a href="https://github.com/Maverick-Ansh/WorldModelBeginner" target="_blank" rel="noopener">Source on GitHub</a></p>
+  </footer>
+
+  <button class="totop" id="totop" title="Back to top" aria-label="Back to top">↑</button>
+
+<script>
+const CAT_FALLBACK = {
+  "cs.CV": "Computer Vision & Pattern Recognition",
+  "cs.AI": "Artificial Intelligence",
+  "cs.LG": "Machine Learning",
+  "cs.CL": "Computation & Language (NLP)",
+  "cs.NE": "Neural & Evolutionary Computing"
+};
+
+let DATA = { papers: [], categories: [], category_names: CAT_FALLBACK };
+let activeCat = "all";
+
+const el = (id) => document.getElementById(id);
+
+function esc(s) {
+  return (s || "").replace(/[&<>"']/g, (c) => (
+    { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]
+  ));
+}
+
+function fmtDate(iso) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (isNaN(d)) return "";
+  return d.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
+}
+
+function paperInCat(p, cat) {
+  if (cat === "all") return true;
+  return (p.categories && p.categories.includes(cat)) || p.primary_category === cat;
+}
+
+function buildChips() {
+  const chips = el("chips");
+  const cats = ["all", ...DATA.categories];
+  chips.innerHTML = "";
+  cats.forEach((cat) => {
+    const count = DATA.papers.filter((p) => paperInCat(p, cat)).length;
+    const label = cat === "all" ? "All" : cat;
+    const b = document.createElement("button");
+    b.className = "chip" + (cat === activeCat ? " active" : "");
+    b.innerHTML = esc(label) + `<span class="n">${count}</span>`;
+    b.title = cat === "all" ? "All categories" : (DATA.category_names[cat] || cat);
+    b.onclick = () => { activeCat = cat; buildChips(); render(); };
+    chips.appendChild(b);
+  });
+}
+
+function currentList() {
+  const q = el("search").value.trim().toLowerCase();
+  let list = DATA.papers.filter((p) => paperInCat(p, activeCat));
+  if (q) {
+    list = list.filter((p) => {
+      const hay = (p.title + " " + (p.authors || []).join(" ") + " " + p.abstract).toLowerCase();
+      return hay.includes(q);
+    });
+  }
+  const dir = el("sort").value === "oldest" ? 1 : -1;
+  list.sort((a, b) => dir * ((a.published || "") < (b.published || "") ? -1 : 1));
+  return list;
+}
+
+function render() {
+  const list = currentList();
+  const listEl = el("list");
+  el("count").textContent =
+    `${list.length} paper${list.length === 1 ? "" : "s"}` +
+    (activeCat === "all" ? "" : ` in ${activeCat}`);
+
+  if (!list.length) {
+    listEl.innerHTML = `<div class="status">No papers match your filters.</div>`;
+    return;
+  }
+
+  listEl.innerHTML = list.map((p) => {
+    const authors = (p.authors || []).slice(0, 8).join(", ") +
+      ((p.authors || []).length > 8 ? ", et al." : "");
+    const badges = (p.categories || []).map((c) => {
+      const isPrimary = c === p.primary_category;
+      const name = DATA.category_names[c] || c;
+      return `<span class="badge${isPrimary ? " primary" : ""}" title="${esc(name)}">${esc(c)}</span>`;
+    }).join("");
+    return `
+      <article class="card">
+        <h2><a href="${esc(p.abs_url)}" target="_blank" rel="noopener">${esc(p.title)}</a></h2>
+        <p class="authors">${esc(authors)}</p>
+        <div class="badges">${badges}</div>
+        <p class="abstract">${esc(p.abstract)}</p>
+        <div class="card-footer">
+          <button class="toggle" onclick="toggleAbs(this)">Show more</button>
+          <span class="date">${fmtDate(p.published)}</span>
+          <span class="links">
+            <a href="${esc(p.abs_url)}" target="_blank" rel="noopener">abstract</a>
+            <a href="${esc(p.pdf_url)}" target="_blank" rel="noopener">PDF ↓</a>
+          </span>
+        </div>
+      </article>`;
+  }).join("");
+}
+
+function toggleAbs(btn) {
+  const abs = btn.closest(".card").querySelector(".abstract");
+  abs.classList.toggle("open");
+  btn.textContent = abs.classList.contains("open") ? "Show less" : "Show more";
+}
+window.toggleAbs = toggleAbs;
+
+function fillMeta() {
+  const updated = DATA.generated_utc ? fmtDate(DATA.generated_utc) : "—";
+  el("meta").innerHTML =
+    `<span><b>${DATA.papers.length}</b> recent papers</span>` +
+    `<span><b>${DATA.categories.length}</b> categories</span>` +
+    `<span>Last updated: <b>${esc(updated)}</b></span>`;
+}
+
+async function load() {
+  try {
+    const res = await fetch("papers.json?_=" + Date.now(), { cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    DATA = await res.json();
+    if (!DATA.category_names) DATA.category_names = CAT_FALLBACK;
+    if (!DATA.categories || !DATA.categories.length) DATA.categories = Object.keys(CAT_FALLBACK);
+    fillMeta();
+    buildChips();
+    render();
+  } catch (err) {
+    el("list").innerHTML =
+      `<div class="status">Couldn't load papers right now (${esc(String(err))}).<br>
+       The daily build may still be running — please check back shortly.</div>`;
+  }
+}
+
+el("search").addEventListener("input", render);
+el("sort").addEventListener("change", render);
+
+const totop = el("totop");
+window.addEventListener("scroll", () => {
+  totop.classList.toggle("show", window.scrollY > 600);
+});
+totop.onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
+
+load();
+</script>
+</body>
+</html>

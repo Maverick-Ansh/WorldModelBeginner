@@ -1,0 +1,60 @@
+name: Build & Deploy arXiv Feed
+
+# Fetches the latest arXiv papers and publishes the static site to GitHub Pages.
+on:
+  # Run it by hand from the Actions tab.
+  workflow_dispatch:
+  # Re-deploy whenever the site or fetcher changes.
+  push:
+    branches: ["claude/relaxed-lamport-utklkx"]
+    paths:
+      - "webapp/**"
+      - ".github/workflows/arxiv-pages.yml"
+  # Refresh the feed once a day (06:15 UTC). NOTE: scheduled runs only fire
+  # from the repository's DEFAULT branch, so merge this workflow to the
+  # default branch to enable the daily auto-update.
+  schedule:
+    - cron: "15 6 * * *"
+
+# Permissions needed to enable and publish to GitHub Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one Pages deployment at a time.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Fetch latest arXiv papers
+        run: python webapp/fetch_papers.py --out webapp/site/papers.json --max-results 60
+
+      - name: Configure GitHub Pages (auto-enable if needed)
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: webapp/site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
