@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   # Re-deploy whenever the site or fetcher changes.
   push:
-    branches: ["claude/relaxed-lamport-utklkx"]
+    branches: ["claude/practical-ride-7shn7v", "claude/relaxed-lamport-utklkx"]
     paths:
       - "webapp/**"
       - ".github/workflows/arxiv-pages.yml"
