@@ -4,15 +4,16 @@ name: Build & Deploy arXiv Feed
 on:
   # Run it by hand from the Actions tab.
   workflow_dispatch:
-  # Re-deploy whenever the site or fetcher changes.
+  # Re-deploy whenever the site or fetcher changes on the default branch.
+  # (GitHub Pages only allows deployments from the default branch, so we
+  # don't trigger on other branches — that would just fail at the Pages gate.)
   push:
-    branches: ["claude/practical-ride-7shn7v", "claude/relaxed-lamport-utklkx"]
+    branches: ["claude/practical-ride-7shn7v"]
     paths:
       - "webapp/**"
       - ".github/workflows/arxiv-pages.yml"
-  # Refresh the feed once a day (06:15 UTC). NOTE: scheduled runs only fire
-  # from the repository's DEFAULT branch, so merge this workflow to the
-  # default branch to enable the daily auto-update.
+  # Refresh the feed once a day (06:15 UTC). Scheduled runs fire only from
+  # the repository's DEFAULT branch, where this workflow now lives.
   schedule:
     - cron: "15 6 * * *"
 

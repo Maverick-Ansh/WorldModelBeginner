@@ -31,10 +31,13 @@ Go to the repo's **Actions** tab → **Build & Deploy arXiv Feed** → **Run wor
 
 ## Daily auto-updates
 
-GitHub only runs *scheduled* workflows from the repository's **default branch**.
-To enable the daily refresh, merge this branch into the default branch.
-Until then, the site still updates on every push and whenever you run the
-workflow manually.
+This workflow lives on the repository's **default branch**, so the daily
+schedule (06:15 UTC) refreshes the feed automatically — no action needed.
+You can also trigger an update anytime from the **Actions** tab, or it will
+re-deploy whenever you push changes under `webapp/` to the default branch.
+
+> Note: GitHub Pages only deploys from the default branch, which is why the
+> workflow is configured to run there.
 
 ## Run locally
 
