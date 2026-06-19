@@ -12,10 +12,16 @@ on:
     paths:
       - "webapp/**"
       - ".github/workflows/arxiv-pages.yml"
-  # Refresh the feed once a day (06:15 UTC). Scheduled runs fire only from
-  # the repository's DEFAULT branch, where this workflow now lives.
+  # Refresh the feed twice a day. Scheduled runs fire only from the
+  # repository's DEFAULT branch, where this workflow now lives.
+  #
+  # NOTE: GitHub silently drops scheduled runs that land on congested
+  # times (top of the hour and :15/:30/:45). Yesterday's run was delayed
+  # ~4.5h, a sign of that congestion. We use an odd minute and run twice
+  # so a dropped run doesn't stall the feed for a whole day.
   schedule:
-    - cron: "15 6 * * *"
+    - cron: "37 6 * * *"
+    - cron: "37 18 * * *"
 
 # Permissions needed to enable and publish to GitHub Pages.
 permissions:
